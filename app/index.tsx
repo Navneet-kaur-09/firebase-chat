@@ -1,9 +1,9 @@
-import { Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 
-export default function Index() {
+export default function StartPage() {
   return (
-    <View className="bg-red-200">
-      <Text className="text-2xl text-center">Home</Text>
+    <View className="flex-1 justify-center items-center">
+      <ActivityIndicator size="large" color="gray" />
     </View>
   );
 }
