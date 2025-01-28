@@ -6,10 +6,12 @@ import { useRouter } from 'expo-router';
 import Loading from '@/components/Loading';
 import Feather from '@expo/vector-icons/Feather';
 import CustomKeyboardView from '@/components/CustomKeyboardView';
+import { useAuth } from '@/context/authContext';
 
 
 export default function SignUp() {
     const router = useRouter();
+    const {register} = useAuth();
     const [loading, setLoading] = useState(false);
 
     const emailRef = useRef("");
@@ -22,7 +24,16 @@ export default function SignUp() {
             Alert.alert('Sign Up', "Please fill in all the fields!")
             return;
         }
-            
+
+        setLoading(true);
+        let response = await register(emailRef.current, passwordRef.current, usernameRef.current, profileRef.current);
+         setLoading(false);
+         
+         console.log('got result: ', response);
+         if(!response.success){
+            Alert.alert('Sign Up', response.msg);
+
+         }
     }
 
   return (
