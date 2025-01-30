@@ -2,7 +2,7 @@ import ChatRoomHeader from '@/components/ChatRoomHeader';
 import MessageList from '@/components/MessageList';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StatusBar, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StatusBar, TextInput, TouchableOpacity, Alert, Keyboard } from 'react-native';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import Feather from '@expo/vector-icons/Feather';
 import CustomKeyboardView from '@/components/CustomKeyboardView';
@@ -18,6 +18,7 @@ export default function chatRoom() {
     const [messages, setMessages]= useState([]);
     const textRef = useRef('');
     const inputRef = useRef(null);
+    const scrollViewRef = useRef(null);
 
     useEffect(()=>{
       createRoomIfNotExists();
@@ -33,9 +34,27 @@ export default function chatRoom() {
         });
         setMessages([...allMessages]);
       });
-      return unsub;
+
+      const KeyboardDidShowListener = Keyboard.addListener(
+        'keyboardDidShow', updateScrollView
+      )
+
+      return ()=>{
+        unsub();
+        KeyboardDidShowListener.remove();
+      }
 
     },[]);
+
+    useEffect(()=>{
+      updateScrollView();
+    },[messages])
+
+    const updateScrollView = ()=>{
+      setTimeout(()=>{
+        scrollViewRef?.current?.scrollToEnd({animated: true})
+      }, 100)
+    }
 
     const createRoomIfNotExists = async ()=>{
       let roomId = getRoomId(user?.userId, item?.userId);
@@ -80,7 +99,7 @@ export default function chatRoom() {
       <View className='h-3 border-b border-neutral-300'/>
       <View className='flex-1 justify-between bg-neutral-100 overflow-visible'>
         <View className='flex-1'>
-          <MessageList messages={messages} currentUser={user}/>
+          <MessageList scrollViewRef={scrollViewRef} messages={messages} currentUser={user}/>
         </View>
         <View style={{marginBottom: hp(2.7)}} className='pt-2'>
           
