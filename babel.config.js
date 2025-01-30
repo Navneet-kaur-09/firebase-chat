@@ -9,7 +9,8 @@ module.exports = function (api) {
         // Required for expo-router
         //"expo-router/babel",
         "react-native-reanimated/plugin",
-        'nativewind/babel'
+        'nativewind/babel',
+        'module:react-native-dotenv'
       ]
     };
   };
